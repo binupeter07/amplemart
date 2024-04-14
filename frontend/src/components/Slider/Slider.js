@@ -1,78 +1,48 @@
-import React, { useEffect, useState } from "react";
-import  "./Slider.scss";
-import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
+import React from "react";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import "./Slider.scss"; // Your custom styles
+
 import { sliderData } from "./Slider-data";
 import { useNavigate } from "react-router-dom";
 
-const Slider = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
+const SimpleSlider = () => {
   const navigate = useNavigate();
 
-  const slideLength = sliderData.length;
-  const autoScroll = true;
-  let slideInterval;
-  const intervalTime = 5000;
-
-  function prevSlide() {
-    setCurrentSlide(currentSlide === 0 ? slideLength - 1 : currentSlide - 1);
-  }
-
-  function nextSlide() {
-    setCurrentSlide(currentSlide === slideLength - 1 ? 0 : currentSlide + 1);
-  }
-
-  useEffect(() => {
-    setCurrentSlide(0);
-  }, []);
-
-  useEffect(() => {
-    if (autoScroll) {
-      const auto = () => {
-        slideInterval = setInterval(nextSlide, intervalTime);
-      };
-      auto();
-    }
-    return () => clearInterval(slideInterval);
-  }, [currentSlide, intervalTime, autoScroll]);
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 5000,
+    nextArrow: <button className="arrow next">›</button>,
+    prevArrow: <button className="arrow prev">‹</button>,
+    appendDots: dots => (
+      <div>
+        <ul style={{ margin: "0px" }}> {dots} </ul>
+      </div>
+    ),
+  };
 
   return (
-    <div className="slider">
-      <AiOutlineArrowLeft className="arrow prev" onClick={prevSlide} />
-      <AiOutlineArrowRight className="arrow next" onClick={nextSlide} />
-
-      {sliderData.map((slide, index) => {
-        const { image, heading, desc } = slide;
-
-        return (
-          <div
-            key={index}
-            className={index === currentSlide ? "slide current" : "slide"}
-          >
-            {index === currentSlide && (
-              <>
-                <img src={image} alt="slide" />
-                <div className="content">
-                  <span className="span1"></span>
-                  <span className="span1"></span>
-                  <span className="span1"></span>
-                  <span className="span1"></span>
-                  <h2>{heading}</h2>
-                  <p>{desc}</p>
-                  <hr />
-                  <button
-                    className="--btn --btn-primary"
-                    onClick={() => navigate("/shop")}
-                  >
-                    Shop Now
-                  </button>
-                </div>
-              </>
-            )}
+    <Slider {...settings}>
+      {sliderData.map((slide, index) => (
+     <div className="slide-wrapper">
+         <div key={index} className="slide">
+          <div className="slide-image">
+            <img src={slide.image} />
           </div>
-        );
-      })}
-    </div>
+          <div className="content">
+            <button className="button" onClick={() => navigate("/shop")}>Shop Now</button>
+          </div>
+        </div>
+     </div>
+      ))}
+    </Slider>
   );
 };
 
-export default Slider;
+export default SimpleSlider;

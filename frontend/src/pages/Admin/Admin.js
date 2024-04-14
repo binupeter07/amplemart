@@ -12,6 +12,7 @@ import Coupon from "../../components/Admin/coupon/Coupon";
 import OrderDetails from "../../components/Admin/orderDetails/OrderDetails";
 import Orders from "../../components/Admin/orders/Orders";
 import Home from "../../components/Admin/home/Home";
+import ViewUsers from "../../components/Admin/viewUsers/ViewUsers";
 
 const Admin = () => {
   return (
@@ -23,6 +24,7 @@ const Admin = () => {
         <Routes>
           <Route path="home" element={<Home />} />
           <Route path="all-products" element={<ViewProducts />} />
+          <Route path="all-users" element={<ViewUsers />} />
           <Route path="add-product" element={<AddProduct />} />
           <Route path="edit-product/:id" element={<EditProduct />} />
           <Route path="orders" element={<Orders />} />

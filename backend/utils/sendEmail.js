@@ -1,50 +1,30 @@
 const nodemailer = require("nodemailer");
-const MailGen = require("mailgen");
+const dotenv = require("dotenv").config();
 
-const sendEmail = async (subject, send_to, template, reply_to, cc) => {
-  // Create Email Transporter
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    host: process.env.EMAIL_HOST,
-    port: 587,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-    // tls: {
-    //   rejectUnauthorized: false,
-    // },
-  });
+const sendEmail = async (subject, htmlContent, send_to) => {
+  try {
+    // Create Email Transporter
+    let transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: "amplemart07@gmail.com",
+        pass: "qxph ckfc uvua fxcu",
+      },
+    });
 
-  // Create Template With MailGen
-  const mailGenerator = new MailGen({
-    theme: "salted",
-    product: {
-      name: "Shopito App",
-      link: "https://shopito.app",
-    },
-  });
-  const emailTemplate = mailGenerator.generate(template);
-  require("fs").writeFileSync("preview.html", emailTemplate, "utf8");
+    // Options for sending email
+    const options = {
+      from: "amplemart07@gmail.com",
+      to: send_to,
+      subject,
+      html: htmlContent,
+    };
 
-  // Options f0r sending email
-  const options = {
-    from: process.env.EMAIL_USER,
-    to: send_to,
-    replyTo: reply_to,
-    subject,
-    html: emailTemplate,
-    cc,
-  };
-
-  // Send Email
-  transporter.sendMail(options, function (err, info) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(info);
-    }
-  });
+    const info = await transporter.sendMail(options);
+    console.log("Email sent:", info.response);
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
 };
 
 module.exports = sendEmail;

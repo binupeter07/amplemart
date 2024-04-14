@@ -148,7 +148,41 @@ export const changePassword = createAsyncThunk(
     }
   }
 );
+// forgotPassword
+export const forgotPassword = createAsyncThunk(
+  "auth/forgotpassword",
+  async (userData, thunkAPI) => {
+    try {
+      return await authService.forgotPassword(userData);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
+// change Password
+export const resetpassword = createAsyncThunk(
+  "auth/resetpassword",
+  async (userData, thunkAPI) => {
+    try {
+      return await authService.resetPassword(userData);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 // getUsers
 export const getUsers = createAsyncThunk(
   "auth/getUsers",
@@ -166,7 +200,43 @@ export const getUsers = createAsyncThunk(
     }
   }
 );
-
+// Delete a Product
+export const deleteUser = createAsyncThunk(
+  "auth/delete",
+  async (id, thunkAPI) => {
+    try {
+      return await authService.deleteUser({id});
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      console.log(message);
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+// Delete a Product
+export const ChangeStatusUser = createAsyncThunk(
+  "auth/ChangeStatusUser",
+  async (id, thunkAPI) => {
+    console.log("id:", id)
+    try {
+      return await authService.changeStatus({id:id});
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      console.log(message);
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 // ADD TO WISHLIST
 export const addToWishlist = createAsyncThunk(
   "auth/addToWishlist",

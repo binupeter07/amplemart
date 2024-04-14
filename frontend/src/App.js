@@ -6,7 +6,7 @@ import Footer from "./components/Footer/Footer";
 import Login from "../src/pages/Auth/Login";
 import Cart from "./pages/cart/Cart";
 import Register from "../src/pages/Auth/Register";
-import ProductDetails from "./components/product/productDetails/ProductDetails";
+import ProductDetails from "./components/product/productDetails/ProductDetails.js";
 import axios from "axios";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -29,6 +29,8 @@ import OrderHistory from "./pages/orderHistory/OrderHistory";
 import Order from "./pages/orderDetails/Order";
 import ReviewProducts from "./pages/reviewProducts/ReviewProducts";
 import { AnimatePresence } from "framer-motion";
+import ChangePassword from "./pages/ChangePassword/ChangePassword.js";
+import ResetPassword from "./pages/resetPassword/ResetPassword.js";
 
 axios.defaults.withCredentials = true;
 
@@ -59,6 +61,8 @@ const App = () => {
             <Route path="/shop" element={<Shop />} />
             <Route path="/product-details/:id" element={<ProductDetails />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/resetpassword" element={<ResetPassword />} />
+            <Route path="/change-password" element={<ChangePassword />} />
             <Route path="/register" element={<Register />} />
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<Profile />} />
@@ -76,7 +80,6 @@ const App = () => {
         </AnimatePresence>
         <Footer />
       </BrowserRouter>
-      ;
     </>
   );
 };

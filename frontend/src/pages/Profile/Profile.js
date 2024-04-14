@@ -1,20 +1,21 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
-import Card from "../../components/card/Card";
+import React, { useEffect, useLayoutEffect, useState } from 'react';
+import Card from '../../components/card/Card';
 
-import "./Profile.scss";
+import './Profile.scss';
 
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from 'react-redux';
 import {
   getUser,
   selectUser,
   updatePhoto,
   updateUser,
-} from "../../redux/features/auth/authSlice";
-import Loader from "../../components/Loader/Loader";
-import { toast } from "react-toastify";
-import { shortenText } from "../../utils/utils";
-import PageMenu from "../../components/PageMenu/PageMenu";
-import { AiOutlineCloudUpload } from "react-icons/ai";
+} from '../../redux/features/auth/authSlice';
+import Loader from '../../components/Loader/Loader';
+import { toast } from 'react-toastify';
+import { shortenText } from '../../utils/utils';
+import PageMenu from '../../components/PageMenu/PageMenu';
+import { AiOutlineCloudUpload } from 'react-icons/ai';
+import { NavLink } from 'react-router-dom';
 
 const cloud_name = process.env.REACT_APP_CLOUD_NAME;
 const upload_preset = process.env.REACT_APP_UPLOAD_PRESET;
@@ -27,10 +28,10 @@ const Profile = () => {
     (state) => state.auth
   );
   const initialState = {
-    name: user?.name || "",
-    email: user?.email || "",
-    phone: user?.phone || "",
-    role: user?.role || "",
+    name: user?.name || '',
+    email: user?.email || '',
+    phone: user?.phone || '',
+    role: user?.role || '',
     address: user?.address || {},
   };
   const [profile, setProfile] = useState(initialState);
@@ -48,19 +49,20 @@ const Profile = () => {
     try {
       if (
         profileImage !== null &&
-        (profileImage.type === "image/jpeg" ||
-          profileImage.type === "image/jpg" ||
-          profileImage.type === "image/png")
+        (profileImage.type === 'image/jpeg' ||
+          profileImage.type === 'image/jpg' ||
+          profileImage.type === 'image/png')
       ) {
         const image = new FormData();
-        image.append("file", profileImage);
-        image.append("cloud_name", cloud_name);
-        image.append("upload_preset", upload_preset);
+        image.append('file', profileImage);
+        image.append('cloud_name', cloud_name);
+        image.append('upload_preset', upload_preset);
+        image.append("folder", "Amplemart Users");
 
         // Save image to Cloudinary
         const response = await fetch(
           `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`,
-          { method: "post", body: image }
+          { method: 'post', body: image }
         );
         const imgData = await response.json();
         console.log(imgData);
@@ -84,14 +86,15 @@ const Profile = () => {
       dispatch(getUser());
     }
   }, [dispatch, user]);
-  // console.log(user);
+
   useEffect(() => {
     if (user) {
+      console.log(user);
       setProfile({
-        name: user.name || "",
-        email: user.email || "",
-        phone: user.phone || "",
-        role: user.role || "",
+        name: user.name || '',
+        email: user.email || '',
+        phone: user.phone || '',
+        role: user.role || '',
         address: user.address || {},
       });
     }
@@ -130,7 +133,7 @@ const Profile = () => {
           <PageMenu />
           <h2>Profile</h2>
           <div className="--flex-start profile">
-            <Card cardClass={"card"}>
+            <Card cardClass={'card'}>
               {!isLoading && user && (
                 <>
                   <div className="profile-photo">
@@ -152,6 +155,16 @@ const Profile = () => {
                         </div>
                       )}
                     </div>
+                  </div>
+                  <div
+                    style={{ marginBottom: '1rem' }}
+                    className="--center-all"
+                  >
+                    <button className="--btn --btn-primary --btn-block">
+                      <NavLink style={{ color: '#ffff' }} to="/change-password">
+                        Change Password
+                      </NavLink>
+                    </button>
                   </div>
                   <form onSubmit={saveProfile}>
                     <p>
@@ -235,10 +248,10 @@ const Profile = () => {
 export const UserName = () => {
   const user = useSelector(selectUser);
 
-  const username = user?.name || "...";
+  const username = user?.name || '...';
 
   return (
-    <span style={{ color: "#ff7722" }}>Hi, {shortenText(username, 9)} |</span>
+    <span style={{ color: '#ff7722' }}>Hi, {shortenText(username, 9)} |</span>
   );
 };
 

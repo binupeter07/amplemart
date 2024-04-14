@@ -79,7 +79,7 @@ const changePassword = async (userData) => {
 };
 
 // Reset Password
-const resetPassword = async (userData, resetToken) => {
+const resetPassword = async ({ userData, resetToken }) => {
   const response = await axios.patch(
     `${API_URL}resetPassword/${resetToken}`,
     userData
@@ -90,7 +90,7 @@ const resetPassword = async (userData, resetToken) => {
 
 // fORGOT Password
 const forgotPassword = async (userData) => {
-  const response = await axios.post(API_URL + "forgotPassword", userData);
+  const response = await axios.post(API_URL + "forgotpassword", userData);
 
   return response.data.message;
 };
@@ -102,9 +102,13 @@ const getUsers = async () => {
   return response.data;
 };
 // Delete User
-const deleteUser = async (id) => {
-  const response = await axios.delete(API_URL + id);
-
+const deleteUser = async (userData) => {
+  const response = await axios.post(API_URL + "deleteUser", userData);
+  return response.data.message;
+};
+// Delete User
+const changeStatus = async (userData) => {
+  const response = await axios.post(API_URL + "changeStatus", userData);
   return response.data.message;
 };
 
@@ -134,27 +138,9 @@ const loginWithGoogle = async (userToken) => {
   return response.data;
 };
 
-// aDD TO WISHLIST
-const addToWishlist = async (productData) => {
-  const response = await axios.post(API_URL + "addToWishlist", productData, {
-    withCredentials: true,
-  });
-  return response.data.message;
-};
 
-// Get Wishlist
-const getWishlist = async () => {
-  const response = await axios.get(API_URL + "getWishlist");
 
-  return response.data;
-};
 
-// Remove From Wishlist
-const removeFromWishlist = async (productId) => {
-  const response = await axios.put(API_URL + `wishlist/${productId}`);
-
-  return response.data.message;
-};
 
 const authService = {
   register,
@@ -175,9 +161,7 @@ const authService = {
   sendLoginCode,
   loginWithCode,
   loginWithGoogle,
-  addToWishlist,
-  getWishlist,
-  removeFromWishlist,
+  changeStatus,
 };
 
 export default authService;

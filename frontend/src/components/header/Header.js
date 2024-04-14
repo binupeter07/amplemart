@@ -63,10 +63,10 @@ const Header = () => {
   };
 
   const cart = (
-    <span className={styles.cart}>
+    <span  className={styles.cart}>
       <Link to="/cart">
         Cart
-        <FaShoppingCart size={20} />
+        <FaShoppingCart style={{marginLeft:'5px'}} size={20} />
         <p>{cartTotalQuantity}</p>
       </Link>
     </span>
@@ -140,9 +140,9 @@ const Header = () => {
           </div>
         </nav>
 
-        <div className={styles["menu-icon"]}>
+        <div  className={styles["menu-icon"]}>
           {cart}
-          <HiOutlineMenuAlt3 size={28} onClick={toggleMenu} />
+          <HiOutlineMenuAlt3  size={28} onClick={toggleMenu} />
         </div>
       </div>
     </header>

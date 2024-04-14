@@ -10,12 +10,6 @@ const PageMenu = () => {
           <li>
             <NavLink to="/profile">Profile</NavLink>
           </li>
-          <li>
-            <NavLink to="/wallet">My Wallet</NavLink>
-          </li>
-          <li>
-            <NavLink to="/wishlist">Wishlist</NavLink>
-          </li>
         </ul>
       </nav>
     </div>

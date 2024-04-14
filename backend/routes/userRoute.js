@@ -14,9 +14,12 @@ const {
   saveCart,
   clearCart,
   updatePhoto,
-  // changePassword,
-  // forgotPassword,
-  // resetPassword,
+  changePassword,
+  forgotPassword,
+  resetPassword,
+  getUsers,
+  deleteUser,
+  changeStatus,
 } = require("../controllers/userController");
 const { protect } = require("../middleware/authMiddleware");
 // comment
@@ -25,12 +28,15 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/logout", logout);
 router.get("/getUser", protect, getUser);
+router.get("/getUsers", protect, getUsers);
+router.post("/deleteUser", protect, deleteUser);
+router.post("/changeStatus", protect, changeStatus);
 router.get("/getLoginStatus", getLoginStatus);
 router.patch("/updateUser", protect, updateUser);
 router.patch("/updatePhoto", protect, updatePhoto);
-// router.patch("/changepassword", protect, changePassword);
-// router.post("/forgotpassword", forgotPassword);
-// router.put("/resetpassword/:resetToken", resetPassword);
+router.patch("/changePassword", protect, changePassword);
+router.post("/forgotpassword", forgotPassword);
+router.patch("/resetPassword/:resetToken", resetPassword);
 
 // wishlist
 router.post("/addToWishlist", protect, addToWishlist);

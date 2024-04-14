@@ -40,7 +40,7 @@ const Order = () => {
         imageWidth * ratio,
         imageHeight * ratio
       );
-      pdf.save(`shopitoInvoice.pdf`);
+      pdf.save(`amplemartInvoice.pdf`);
     });
   };
 

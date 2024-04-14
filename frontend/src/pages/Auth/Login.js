@@ -6,7 +6,11 @@ import Card from "../../components/card/Card";
 import { toast } from "react-toastify";
 import Loader from "../../components/Loader/Loader";
 import { useDispatch, useSelector } from "react-redux";
-import { RESET_AUTH, login } from "../../redux/features/auth/authSlice";
+import {
+  RESET_AUTH,
+  login,
+  forgotPassword,
+} from "../../redux/features/auth/authSlice";
 import { validateEmail } from "../../redux/features/auth/authService";
 import { useSearchParams } from "react-router-dom";
 import { getCartDB, saveCartDB } from "../../redux/features/product/cartSlice";
@@ -18,7 +22,6 @@ const Login = () => {
     (state) => state.auth
   );
   const [urlParams] = useSearchParams();
-  console.log(urlParams.get("redirect"));
   const redirect = urlParams.get("redirect");
 
   const dispatch = useDispatch();
@@ -37,8 +40,22 @@ const Login = () => {
       email,
       password,
     };
-    // console.log(userData);
     await dispatch(login(userData));
+  };
+
+  const forgotPasswordHandler = async () => {
+    if (!email) {
+      return toast.error("Please enter your email to reset password");
+    }
+
+    try {
+      await dispatch(forgotPassword({ email }));
+      toast.success("Password reset email sent successfully");
+    } catch (error) {
+      toast.error(
+        "Failed to send password reset email. Please try again later"
+      );
+    }
   };
 
   useEffect(() => {
@@ -52,8 +69,6 @@ const Login = () => {
         return navigate("/cart");
       }
       dispatch(getCartDB());
-      // navigate("/");
-      // window.location.reload();
     }
 
     dispatch(RESET_AUTH());
@@ -89,6 +104,16 @@ const Login = () => {
               <button type="submit" className="--btn --btn-primary --btn-block">
                 Login
               </button>
+              <p
+                style={{
+                  textDecoration: "underline",
+                  color: "--light-blue",
+                  cursor: "pointer",
+                }}
+                onClick={forgotPasswordHandler}
+              >
+                Forgot Password
+              </p>
             </form>
 
             <span className={styles.register}>

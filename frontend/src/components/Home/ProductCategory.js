@@ -1,6 +1,5 @@
 import React from "react";
 import "./ProductCategory.scss";
-import { useNavigate } from "react-router-dom";
 import Category from "./Category";
 
 const ProductCategory = () => {
@@ -8,7 +7,8 @@ const ProductCategory = () => {
     {
       id: 1,
       title: "Mobile Phones",
-      image: "https://i.ibb.co/5GVkd3m/c1.jpg",
+      image:
+        "https://m.media-amazon.com/images/I/51UuPZLMaCL._AC_UY327_FMwebp_QL65_.jpg",
     },
     {
       id: 2,

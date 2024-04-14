@@ -43,10 +43,10 @@ const createOrder = asyncHandler(async (req, res) => {
   });
 
   // Send Order Email to the user
-  const subject = "Shopito Order Placed";
+  const subject = "Amplemart Order Placed";
   const send_to = req.user.email;
   const template = orderSuccessEmail(req.user.name, cartItems);
-  const reply_to = "donaldzee.ng@gmail.com";
+  const reply_to = "amplemart.ng@gmail.com";
 
   await sendEmail(subject, send_to, template, reply_to);
 
@@ -154,86 +154,7 @@ const payWithStripe = asyncHandler(async (req, res) => {
   });
 });
 
-// Verify FLW Payment
-const verifyFlwPayment = asyncHandler(async (req, res) => {
-  const { transaction_id } = req.query;
 
-  // Confirm transaction
-  const url = `https://api.flutterwave.com/v3/transactions/${transaction_id}/verify`;
-
-  const response = await axios({
-    url,
-    method: "get",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: process.env.FLW_SECRET_KEY,
-    },
-  });
-
-  // console.log(response.data.data);
-  const { amount, customer, tx_ref } = response.data.data;
-
-  const successURL =
-    process.env.FRONTEND_URL +
-    `/checkout-flutterwave?payment=successful&ref=${tx_ref}`;
-  const failureURL =
-    process.env.FRONTEND_URL + "/checkout-flutterwave?payment=failed";
-  if (req.query.status === "successful") {
-    res.redirect(successURL);
-  } else {
-    res.redirect(failureURL);
-  }
-});
-
-// Pay With Flutterwave // NOT WORKING
-const payWithFlutterwave = async (req, res) => {
-  const { items, userID } = req.body;
-  const products = await Product.find();
-  const user = await User.findById(userID);
-  const orderAmount = calculateTotalPrice(products, items);
-  // console.log(orderAmount);
-  // const url = "https://jsonplaceholder.typicode.com/posts";
-  const url = "https://api.flutterwave.com/v3/payments";
-  const json = {
-    tx_ref: "shopito-48981487343MDI0NzMx",
-    amount: orderAmount,
-    currency: "USD",
-    // payment_options: "card, banktransfer, ussd",
-    redirect_url: "http://localhost:5000/response",
-    //   meta: {
-    //     consumer_id: 23,
-    //     consumer_mac: "92a3-912ba-1192a",
-    //   },
-    customer: {
-      email: user?.email,
-      phone_number: user.phone,
-      name: user.name,
-    },
-    customizations: {
-      title: "Shopito Online Store",
-      description: "Payment for products",
-      logo: "https://www.logolynx.com/images/logolynx/22/2239ca38f5505fbfce7e55bbc0604386.jpeg",
-    },
-  };
-
-  axios
-    .post(url, json, {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json;charset=UTF-8",
-        Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`,
-      },
-    })
-    .then(({ data }) => {
-      // console.log(data);
-      return res.status(200).json(data);
-    })
-    .catch((err) => {
-      // console.log(err.message);
-      return res.json(err.message);
-    });
-};
 
 // pAYWith Wallet
 // Pay with Wallet
@@ -262,7 +183,7 @@ const payWithWallet = asyncHandler(async (req, res) => {
   const newTransaction = await Transaction.create({
     amount: orderAmount,
     sender: user.email,
-    receiver: "Shopito store",
+    receiver: "Amplemart store",
     description: "Payment for products.",
     status: "success",
   });
@@ -283,7 +204,7 @@ const payWithWallet = asyncHandler(async (req, res) => {
     orderStatus: "Order Placed...",
     cartItems,
     shippingAddress,
-    paymentMethod: "Shopito Wallet",
+    paymentMethod: "Amp Wallet",
     coupon,
   });
 
@@ -336,7 +257,5 @@ module.exports = {
   getOrder,
   updateOrderStatus,
   payWithStripe,
-  verifyFlwPayment,
-  payWithFlutterwave,
   payWithWallet,
 };

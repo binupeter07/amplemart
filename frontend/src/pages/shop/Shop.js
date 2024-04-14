@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import styles from "./Shop.module.scss";
+import styles from './Shop.module.scss';
+import { useLocation } from 'react-router-dom';
 
-import { FaCogs } from "react-icons/fa";
+import { FaCogs } from 'react-icons/fa';
 import {
   GET_PRICE_RANGE,
   getProducts,
   selectIsLoading,
   selectProducts,
-} from "../../redux/features/product/productSlice";
-import { Spinner } from "../../components/Loader/Loader";
-import ProductList from "../../components/product/productList/ProductList";
-import ProductFilter from "../../components/product/productFilter/ProductFilter";
+} from '../../redux/features/product/productSlice';
+import { Spinner } from '../../components/Loader/Loader';
+import ProductList from '../../components/product/productList/ProductList';
+import ProductFilter from '../../components/product/productFilter/ProductFilter';
 
 const Product = () => {
   const products = useSelector(selectProducts);
@@ -20,6 +21,16 @@ const Product = () => {
 
   const [showFilter, setShowFilter] = useState(false);
   const isLoading = useSelector(selectIsLoading);
+
+  const location = useLocation();
+  const [categoryTitle, setCategoryTitle] = useState('');
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const title = searchParams.get('title');
+
+    setCategoryTitle(title);
+  }, [location.search]);
 
   useEffect(() => {
     dispatch(getProducts());
@@ -39,26 +50,26 @@ const Product = () => {
 
   return (
     <section>
-      <div className={`container ${styles.product}`}>
+      <div className={`container ${styles.product}`}> {/* Corrected */}
         <aside
           className={
-            showFilter ? `${styles.filter} ${styles.show}` : `${styles.filter}`
+            showFilter ? `${styles.filter} ${styles.show}` : `${styles.filter}` // Corrected
           }
         >
-          {isLoading ? null : <ProductFilter />}
+          {isLoading ? null : <ProductFilter categoryTitle={categoryTitle} />}
         </aside>
         <div className={styles.content}>
           {isLoading ? <Spinner /> : <ProductList products={products} />}
           <div className={styles.icon} onClick={toggleFilter}>
             <FaCogs size={20} color="orangered" />
             <p>
-              <b>{showFilter ? "Hide Filter" : "Show Filter"}</b>
+              <b>{showFilter ? 'Hide Filter' : 'Show Filter'}</b>
             </p>
           </div>
         </div>
       </div>
     </section>
-  );
+  );  
 };
 
 export default Product;

@@ -19,7 +19,7 @@ app.use(express.urlencoded({ urlencoded: false }));
 app.use;
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://amplemart-app.vercel.app"],
+    origin: ["http://localhost:3000", "https://amplemart.netlify.app"],
     credentials: true,
   })
 );

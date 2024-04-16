@@ -50,10 +50,10 @@ const Product = () => {
 
   return (
     <section>
-      <div className={`container ${styles.product}`}> {/* Corrected */}
+      <div className={`${styles.container} ${styles.product}`}>
         <aside
           className={
-            showFilter ? `${styles.filter} ${styles.show}` : `${styles.filter}` // Corrected
+            showFilter ? `${styles.filter} ${styles.show}` : styles.filter
           }
         >
           {isLoading ? null : <ProductFilter categoryTitle={categoryTitle} />}
@@ -69,7 +69,7 @@ const Product = () => {
         </div>
       </div>
     </section>
-  );  
+  );
 };
 
 export default Product;

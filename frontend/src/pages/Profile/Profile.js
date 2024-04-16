@@ -57,7 +57,6 @@ const Profile = () => {
         image.append('file', profileImage);
         image.append('cloud_name', cloud_name);
         image.append('upload_preset', upload_preset);
-        image.append("folder", "Amplemart Users");
 
         // Save image to Cloudinary
         const response = await fetch(

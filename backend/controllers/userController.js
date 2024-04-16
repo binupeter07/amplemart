@@ -174,7 +174,7 @@ const changeStatus = asyncHandler(async (req, res) => {
 });
 
 const getUser = asyncHandler(async (req, res) => {
-  const user = await User.find(req.user._id).select('-password');
+  const user = await User.findOne(req.user._id).select('-password');
 
   if (user) {
     // const { _id, name, email, phone, address } = user;

@@ -205,7 +205,7 @@ export const deleteUser = createAsyncThunk(
   "auth/delete",
   async (id, thunkAPI) => {
     try {
-      return await authService.deleteUser({id});
+      return await authService.deleteUser({ id });
     } catch (error) {
       const message =
         (error.response &&
@@ -222,9 +222,9 @@ export const deleteUser = createAsyncThunk(
 export const ChangeStatusUser = createAsyncThunk(
   "auth/ChangeStatusUser",
   async (id, thunkAPI) => {
-    console.log("id:", id)
+    console.log("id:", id);
     try {
-      return await authService.changeStatus({id:id});
+      return await authService.changeStatus({ id: id });
     } catch (error) {
       const message =
         (error.response &&

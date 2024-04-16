@@ -17,7 +17,7 @@ export const logo = (
   <div className={styles.logo}>
     <Link to="/">
       <h2>
-        Ample<span>Mart</span>
+        Ample<span>Mart</span>.
       </h2>
     </Link>
   </div>
@@ -63,10 +63,10 @@ const Header = () => {
   };
 
   const cart = (
-    <span  className={styles.cart}>
+    <span className={styles.cart}>
       <Link to="/cart">
         Cart
-        <FaShoppingCart style={{marginLeft:'5px'}} size={20} />
+        <FaShoppingCart size={20} />
         <p>{cartTotalQuantity}</p>
       </Link>
     </span>
@@ -103,7 +103,7 @@ const Header = () => {
             </li>
             <li>
               <AdminOnlyLink>
-                <NavLink to="/admin/home" className={activeLink}>
+                <NavLink to="admin/home" className={activeLink}>
                   | &nbsp; Admin
                 </NavLink>
               </AdminOnlyLink>
@@ -112,13 +112,13 @@ const Header = () => {
           <div className={styles["header-right"]} onClick={hideMenu}>
             <span className={styles.links}>
               <ShowOnLogin>
-                <Link to="profile">
+                <Link to="/profile">
                   <FaUserCircle size={16} color="#ff7722" />
                   <UserName />
                 </Link>
               </ShowOnLogin>
               <ShowOnLogout>
-                <NavLink to="/login" className={activeLink}>
+                <NavLink to="login" className={activeLink}>
                   Login
                 </NavLink>
                 <NavLink to="/register" className={activeLink}>
@@ -140,9 +140,9 @@ const Header = () => {
           </div>
         </nav>
 
-        <div  className={styles["menu-icon"]}>
+        <div className={styles["menu-icon"]}>
           {cart}
-          <HiOutlineMenuAlt3  size={28} onClick={toggleMenu} />
+          <HiOutlineMenuAlt3 size={28} onClick={toggleMenu} />
         </div>
       </div>
     </header>

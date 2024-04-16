@@ -1,15 +1,12 @@
-import React, { useEffect } from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
-import Home from "./pages/Home/Home";
-import Header from "./components/header/Header";
-import Footer from "./components/Footer/Footer";
-import Login from "../src/pages/Auth/Login";
-import Cart from "./pages/cart/Cart";
-import Register from "../src/pages/Auth/Register";
-import ProductDetails from "./components/product/productDetails/ProductDetails.js";
 import axios from "axios";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Header from "./components/header/Header";
+import Home from "./pages/Home/Home";
+import Login from "./pages/Auth/Login";
+import Register from "./pages/Auth/Register";
+import Footer from "./components/Footer/Footer";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getLoginStatus,
@@ -17,24 +14,30 @@ import {
   selectIsLoggedIn,
   selectUser,
 } from "./redux/features/auth/authSlice";
+import { useEffect } from "react";
 import Profile from "./pages/Profile/Profile";
+import AdminOnlyRoute from "./components/adminOnlyRoute/AdminOnlyRoute";
 import Admin from "./pages/Admin/Admin";
-import NotFound from "./pages/404/notFound";
-import Shop from "./pages/shop/Shop";
+import NotFound from "./pages/404/NotFound";
+import Product from "./pages/shop/Shop";
+import ProductDetails from "./components/product/productDetails/ProductDetails";
+import Cart from "./pages/cart/Cart";
 import CheckoutDetails from "./pages/checkout/CheckoutDetails";
 import Checkout from "./pages/checkout/Checkout";
 import CheckoutSuccess from "./pages/checkout/CheckoutSuccess";
-import CheckoutPaypal from "./pages/checkout/CheckoutPaypal";
 import OrderHistory from "./pages/orderHistory/OrderHistory";
-import Order from "./pages/orderDetails/Order";
+import OrderDetails from "./pages/orderDetails/Order";
 import ReviewProducts from "./pages/reviewProducts/ReviewProducts";
+import CheckoutPaypal from "./pages/checkout/CheckoutPaypal";
 import { AnimatePresence } from "framer-motion";
 import ChangePassword from "./pages/ChangePassword/ChangePassword.js";
 import ResetPassword from "./pages/resetPassword/ResetPassword.js";
 
 axios.defaults.withCredentials = true;
+// Deploy
 
-const App = () => {
+function App() {
+  const location = useLocation();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const user = useSelector(selectUser);
@@ -52,36 +55,46 @@ const App = () => {
 
   return (
     <>
-    <ToastContainer />
-      <BrowserRouter>
-        <Header />
-        <AnimatePresence>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/shop" element={<Shop />} />
-            <Route path="/product-details/:id" element={<ProductDetails />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/resetpassword" element={<ResetPassword />} />
-            <Route path="/change-password" element={<ChangePassword />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/admin/*" element={<Admin />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="*" element={<NotFound />} />
-            <Route path="/checkout-details" element={<CheckoutDetails />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/checkout-paypal" element={<CheckoutPaypal />} />
-            <Route path="/checkout-success" element={<CheckoutSuccess />} />
-            <Route path="/order-history" element={<OrderHistory />} />
-            <Route path="/order-details/:id" element={<Order />} />
-            <Route path="/review-product/:id" element={<ReviewProducts />} />
-          </Routes>
-        </AnimatePresence>
-        <Footer />
-      </BrowserRouter>
+      <ToastContainer />
+      <Header />
+      <AnimatePresence>
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
+          <Route path="/profile" element={<Profile />} />
+
+          <Route
+            path="/admin/*"
+            element={
+              <AdminOnlyRoute>
+                <Admin />
+              </AdminOnlyRoute>
+            }
+          />
+
+          <Route path="/shop" element={<Product />} />
+          <Route path="/product-details/:id" element={<ProductDetails />} />
+          <Route path="/cart" element={<Cart />} />
+
+          <Route path="/checkout-details" element={<CheckoutDetails />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/checkout-paypal" element={<CheckoutPaypal />} />
+          <Route path="/checkout-success" element={<CheckoutSuccess />} />
+          <Route path="/resetpassword" element={<ResetPassword />} />
+          <Route path="/change-password" element={<ChangePassword />} />
+          <Route path="/order-history" element={<OrderHistory />} />
+          <Route path="/order-details/:id" element={<OrderDetails />} />
+
+          <Route path="/review-product/:id" element={<ReviewProducts />} />
+
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </AnimatePresence>
+      <Footer />
     </>
   );
-};
+}
 
 export default App;

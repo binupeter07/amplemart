@@ -18,7 +18,7 @@ import { useEffect } from "react";
 import Profile from "./pages/Profile/Profile";
 import AdminOnlyRoute from "./components/adminOnlyRoute/AdminOnlyRoute";
 import Admin from "./pages/Admin/Admin";
-import NotFound from "./pages/404/NotFound";
+import NotFound from "./pages/404/NotFound.js";
 import Product from "./pages/shop/Shop";
 import ProductDetails from "./components/product/productDetails/ProductDetails";
 import Cart from "./pages/cart/Cart";

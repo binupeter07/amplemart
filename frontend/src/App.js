@@ -18,7 +18,7 @@ import { useEffect } from "react";
 import Profile from "./pages/Profile/Profile";
 import AdminOnlyRoute from "./components/adminOnlyRoute/AdminOnlyRoute";
 import Admin from "./pages/Admin/Admin";
-import NotFound from "./pages/404/NotFound.js";
+// import NotFound from "./pages/404/NotFound.js";
 import Product from "./pages/shop/Shop";
 import ProductDetails from "./components/product/productDetails/ProductDetails";
 import Cart from "./pages/cart/Cart";
@@ -89,7 +89,7 @@ function App() {
 
           <Route path="/review-product/:id" element={<ReviewProducts />} />
 
-          <Route path="*" element={<NotFound />} />
+          {/* <Route path="*" element={<NotFound />} /> */}
         </Routes>
       </AnimatePresence>
       <Footer />

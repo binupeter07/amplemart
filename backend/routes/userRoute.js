@@ -22,6 +22,7 @@ const {
   changeStatus,
 } = require("../controllers/userController");
 const { protect } = require("../middleware/authMiddleware");
+const { sendContactMail } = require("../controllers/contactController");
 // comment
 
 router.post("/register", registerUser);
@@ -47,5 +48,6 @@ router.put("/wishlist/:productId", protect, removeFromWishlist);
 router.get("/getCart", protect, getCart);
 router.patch("/saveCart", protect, saveCart);
 router.patch("/clearCart", protect, clearCart);
+router.post('/contactus', sendContactMail)
 
 module.exports = router;

@@ -15,7 +15,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(express.urlencoded({ urlencoded: false }));
+app.use(express.urlencoded({ urlencoded: true , extended:true }));
 app.use;
 app.use(
   cors({

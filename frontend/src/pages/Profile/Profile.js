@@ -49,19 +49,19 @@ const Profile = () => {
     try {
       if (
         profileImage !== null &&
-        (profileImage.type === 'image/jpeg' ||
-          profileImage.type === 'image/jpg' ||
-          profileImage.type === 'image/png')
+        (profileImage.type === "image/jpeg" ||
+          profileImage.type === "image/jpg" ||
+          profileImage.type === "image/png")
       ) {
         const image = new FormData();
-        image.append('file', profileImage);
-        image.append('cloud_name', cloud_name);
-        image.append('upload_preset', upload_preset);
+        image.append("file", profileImage);
+        image.append("cloud_name", cloud_name);
+        image.append("upload_preset", "amplemart");
 
         // Save image to Cloudinary
         const response = await fetch(
           `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`,
-          { method: 'post', body: image }
+          { method: "post", body: image }
         );
         const imgData = await response.json();
         console.log(imgData);

@@ -1,4 +1,4 @@
-import styles from "./ProductDetails.module.scss";
+import styles from "./productDetails.module.scss";
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -126,7 +126,7 @@ const ProductDetails = () => {
                   <p>
                     <b>Price:</b>
                   </p>
-                  <p className={styles.price}>{`$${product?.price}`}</p>
+                  <p className={styles.price}>{`€${product?.price}`}</p>
                 </div>
                 <div className={styles.property}>
                   <p>

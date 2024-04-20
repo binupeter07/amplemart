@@ -20,7 +20,7 @@ const SimpleSlider = () => {
     autoplaySpeed: 5000,
     nextArrow: <button className="arrow next">›</button>,
     prevArrow: <button className="arrow prev">‹</button>,
-    appendDots: dots => (
+    appendDots: (dots) => (
       <div>
         <ul style={{ margin: "0px" }}> {dots} </ul>
       </div>
@@ -30,16 +30,25 @@ const SimpleSlider = () => {
   return (
     <Slider {...settings}>
       {sliderData.map((slide, index) => (
-     <div className="slide-wrapper">
-         <div key={index} className="slide">
-          <div className="slide-image">
-            <img src={slide.image} />
-          </div>
-          <div className="content">
-            <button className="button" onClick={() => navigate("/shop")}>Shop Now</button>
+        <div className="slide-wrapper">
+          <div key={index} className="slide">
+            <div
+              className="slide-image"
+              style={{
+                display: "flex",
+                minHeight: "40vh",
+              }}
+            >
+              <img src={slide.image} />
+            </div>
+
+            <div className="content">
+              <button className="button" onClick={() => navigate("/shop")}>
+                Shop Now
+              </button>
+            </div>
           </div>
         </div>
-     </div>
       ))}
     </Slider>
   );

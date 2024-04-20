@@ -17,7 +17,7 @@ export const logo = (
   <div className={styles.logo}>
     <Link to="/">
       <h2>
-        Ample<span>Mart</span>.
+        Ample<span>Mart</span>
       </h2>
     </Link>
   </div>
@@ -27,7 +27,7 @@ const activeLink = ({ isActive }) => (isActive ? `${styles.active}` : "");
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
-  const [scrollPage, setScrollPage] = useState(false);
+  const [scrollPage, setScrollPage] = useState(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -61,16 +61,6 @@ const Header = () => {
     navigate("/login");
     window.location.reload();
   };
-
-  const cart = (
-    <span className={styles.cart}>
-      <Link to="/cart">
-        Cart
-        <FaShoppingCart size={20} />
-        <p>{cartTotalQuantity}</p>
-      </Link>
-    </span>
-  );
 
   return (
     <header className={scrollPage ? `${styles.fixed}` : null}>
@@ -136,12 +126,24 @@ const Header = () => {
                 </NavLink>
               </ShowOnLogin>
             </span>
-            {cart}
+            <span className={styles["cart-header"]}>
+              <Link to="/cart">
+                Cart
+                <FaShoppingCart style={{ marginLeft: "5px" }} size={20} />
+                <p>{cartTotalQuantity}</p>
+              </Link>
+            </span>
           </div>
         </nav>
 
         <div className={styles["menu-icon"]}>
-          {cart}
+          <span className={styles.cart}>
+            <Link to="/cart">
+              Cart
+              <FaShoppingCart style={{ marginLeft: "5px" }} size={20} />
+              <p>{cartTotalQuantity}</p>
+            </Link>
+          </span>
           <HiOutlineMenuAlt3 size={28} onClick={toggleMenu} />
         </div>
       </div>

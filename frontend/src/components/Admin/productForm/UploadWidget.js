@@ -4,7 +4,6 @@ import { AiOutlineCloudUpload } from "react-icons/ai";
 import { BsTrash } from "react-icons/bs";
 import { toast } from "react-toastify";
 
-
 const cloud_name = process.env.REACT_APP_CLOUD_NAME;
 const upload_preset = process.env.REACT_APP_UPLOAD_PRESET;
 
@@ -52,7 +51,6 @@ const UploadWidget = ({ files, setFiles }) => {
       formData.append("file", file);
       formData.append("upload_preset", upload_preset);
       formData.append("folder", "Amplemart Products");
-
 
       fetch(url, {
         method: "POST",

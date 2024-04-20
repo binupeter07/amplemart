@@ -4,48 +4,49 @@ import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import styles from "./ProductFilter.module.scss";
 import {
-  FILTER_BY_BRAND,
-  FILTER_BY_CATEGORY,
-  FILTER_BY_PRICE,
+  FILTER_PRODUCTS,
+  SET_FILTER_STATE,
 } from "../../../redux/features/product/filterSlice";
-import { GET_PRICE_RANGE } from "../../../redux/features/product/productSlice";
 
 const ProductFilter = ({ categoryTitle }) => {
-  const { products, minPrice, maxPrice } = useSelector((state) => state.product);
+  const { products, minPrice, maxPrice } = useSelector(
+    (state) => state.product
+  );
   const dispatch = useDispatch();
-
-  const [category, setCategory] = useState(categoryTitle || "All");
-  const [brand, setBrand] = useState("All");
-  const [price, setPrice] = useState([minPrice, maxPrice]);
-
-  // Dynamically extract categories and brands for filtering options
-  const allCategories = ["All", ...new Set(products.map((product) => product.category))];
-  const allBrands = ["All", ...new Set(products.map((product) => product.brand))];
-
-  // Dispatch actions on component mount and when dependencies change
-  useEffect(() => {
-    dispatch(GET_PRICE_RANGE({ products }));
-  }, [dispatch, products]);
+  const filter = useSelector((state) => state.filter.filter);
+  const allCategories = [
+    "All",
+    ...new Set(products.map((product) => product.category)),
+  ];
+  const allBrands = [
+    "All",
+    ...new Set(products.map((product) => product.brand)),
+  ];
 
   useEffect(() => {
-    dispatch(FILTER_BY_BRAND({ products, brand }));
-  }, [dispatch, products, brand]);
+    dispatch(FILTER_PRODUCTS({ products, filter }));
+  }, [dispatch, products, filter]);
 
-  useEffect(() => {
-    dispatch(FILTER_BY_PRICE({ products, price }));
-  }, [dispatch, products, price]);
-
-  // Filter products based on selected category
   const filterProducts = (cat) => {
-    setCategory(cat);
-    dispatch(FILTER_BY_CATEGORY({ products, category: cat }));
+    dispatch(SET_FILTER_STATE({ ...filter, category: cat }));
   };
 
-  // Reset filters to their initial states
+  const handleBrandChange = (e) => {
+    dispatch(SET_FILTER_STATE({ ...filter, brand: e.target.value }));
+  };
+
+  const handlePriceChange = (newPrice) => {
+    dispatch(SET_FILTER_STATE({ ...filter, price: newPrice }));
+  };
+
   const clearFilters = () => {
-    setCategory("All");
-    setBrand("All");
-    setPrice([minPrice, maxPrice]);
+    dispatch(
+      SET_FILTER_STATE({
+        category: "All",
+        brand: "All",
+        price: [minPrice, maxPrice],
+      })
+    );
   };
 
   return (
@@ -56,7 +57,8 @@ const ProductFilter = ({ categoryTitle }) => {
           <button
             key={index}
             type="button"
-            className={`${category === cat ? styles.active : ""}`}
+            className={`${filter.category === cat ? styles.active : ""}`}
+            style={{ minWidth: "max-content" }}
             onClick={() => filterProducts(cat)}
           >
             &#8250; {cat}
@@ -65,7 +67,7 @@ const ProductFilter = ({ categoryTitle }) => {
       </div>
       <h4>Brand</h4>
       <div className={styles.brand}>
-        <select value={brand} onChange={(e) => setBrand(e.target.value)}>
+        <select value={filter.brand} onChange={handleBrandChange}>
           {allBrands.map((brand, index) => (
             <option key={index} value={brand}>
               {brand}
@@ -78,13 +80,13 @@ const ProductFilter = ({ categoryTitle }) => {
         <Slider
           range
           marks={{
-            [minPrice]: `$${price[0]}`,
-            [maxPrice]: `$${price[1]}`,
+            [minPrice]: `$${filter.price[0]}`,
+            [maxPrice]: `$${filter.price[1]}`,
           }}
           min={minPrice}
           max={maxPrice}
-          value={price}
-          onChange={(newPrice) => setPrice(newPrice)}
+          value={filter.price}
+          onChange={handlePriceChange}
           tipFormatter={(value) => `$${value}`}
           tipProps={{
             placement: "top",
@@ -92,7 +94,10 @@ const ProductFilter = ({ categoryTitle }) => {
           }}
         />
       </div>
-      <button className={`${styles.clearFilterBtn} --btn-danger`} onClick={clearFilters}>
+      <button
+        className={`${styles.clearFilterBtn} --btn-danger`}
+        onClick={clearFilters}
+      >
         Clear Filter
       </button>
     </div>

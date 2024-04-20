@@ -23,9 +23,9 @@ const login = async (userData) => {
   const response = await axios.post(API_URL + "login", userData, {
     withCredentials: true,
   });
+
   return response.data;
 };
-
 
 // Logout User
 const logout = async () => {
@@ -80,7 +80,7 @@ const changePassword = async (userData) => {
 };
 
 // Reset Password
-const resetPassword = async ({userData, resetToken}) => {
+const resetPassword = async ({ userData, resetToken }) => {
   const response = await axios.patch(
     `${API_URL}resetPassword/${resetToken}`,
     userData
@@ -104,12 +104,12 @@ const getUsers = async () => {
 };
 // Delete User
 const deleteUser = async (userData) => {
-  const response = await axios.post(API_URL + "deleteUser",userData);
+  const response = await axios.post(API_URL + "deleteUser", userData);
   return response.data.message;
 };
 // Delete User
 const changeStatus = async (userData) => {
-  const response = await axios.post(API_URL + "changeStatus",userData);
+  const response = await axios.post(API_URL + "changeStatus", userData);
   return response.data.message;
 };
 
@@ -139,26 +139,9 @@ const loginWithGoogle = async (userToken) => {
   return response.data;
 };
 
-// aDD TO WISHLIST
-const addToWishlist = async (productData) => {
-  const response = await axios.post(API_URL + "addToWishlist", productData, {
-    withCredentials: true,
-  });
-  return response.data.message;
-};
-
-// Get Wishlist
-const getWishlist = async () => {
-  const response = await axios.get(API_URL + "getWishlist");
-
+export const sendContactMail = async (userData) => {
+  const response = await axios.post(API_URL + "contactus", userData);
   return response.data;
-};
-
-// Remove From Wishlist
-const removeFromWishlist = async (productId) => {
-  const response = await axios.put(API_URL + `wishlist/${productId}`);
-
-  return response.data.message;
 };
 
 const authService = {
@@ -180,9 +163,7 @@ const authService = {
   sendLoginCode,
   loginWithCode,
   loginWithGoogle,
-  addToWishlist,
-  getWishlist,
-  removeFromWishlist,changeStatus
+  changeStatus,
 };
 
 export default authService;

@@ -20,6 +20,8 @@ const {
   getUsers,
   deleteUser,
   changeStatus,
+  sendOTP,
+  verifyOTP,
 } = require("../controllers/userController");
 const { protect } = require("../middleware/authMiddleware");
 const { sendContactMail } = require("../controllers/contactController");
@@ -38,6 +40,8 @@ router.patch("/updatePhoto", protect, updatePhoto);
 router.patch("/changePassword", protect, changePassword);
 router.post("/forgotpassword", forgotPassword);
 router.patch("/resetPassword/:resetToken", resetPassword);
+router.post("/send-otp", sendOTP);
+router.post("/verify-otp", verifyOTP);
 
 // wishlist
 router.post("/addToWishlist", protect, addToWishlist);
@@ -48,5 +52,5 @@ router.put("/wishlist/:productId", protect, removeFromWishlist);
 router.get("/getCart", protect, getCart);
 router.patch("/saveCart", protect, saveCart);
 router.patch("/clearCart", protect, clearCart);
-router.post('/contactus', sendContactMail)
+router.post("/contactus", sendContactMail);
 module.exports = router;

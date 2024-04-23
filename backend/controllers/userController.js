@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { sendEmail } = require("../utils/sendEmail");
 const dotenv = require("dotenv").config();
+const { sendOTPMail } = require("../utils/sendOTPMail");
 
 // Generate Token
 const generateToken = (id) => {
@@ -351,6 +352,41 @@ const resetPassword = asyncHandler(async (req, res) => {
   }
 });
 
+let otpStorage = {};
+
+// Send OTP to user's email
+const sendOTP = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  // Check if the email is provided
+  if (!email) {
+    return res.status(400).json({ message: "Email field is required." });
+  }
+
+  // Optional: Check if the email is already registered
+  const userExists = await User.findOne({ email });
+  if (userExists) {
+    return res.status(400).json({ message: "Email already in use." });
+  }
+
+  const otp = await sendOTPMail(email, "no-reply@yourapp.com");
+  otpStorage[email] = otp; 
+
+  res.status(200).json({ message: "OTP sent successfully to " + email });
+});
+
+// Verify OTP provided by the user
+const verifyOTP = asyncHandler(async (req, res) => {
+  const { email, otp } = req.body;
+
+  if (otp === otpStorage[email]) {
+    delete otpStorage[email]; 
+    res.status(200).json({ message: "OTP verified successfully." });
+  } else {
+    res.status(400).json({ message: "Invalid OTP. Please try again." });
+  }
+});
+
 // Add product to wishlist
 const addToWishlist = asyncHandler(async (req, res) => {
   const { productId } = req.body;
@@ -448,4 +484,6 @@ module.exports = {
   clearCart,
   getUsers,
   changeStatus,
+  sendOTP,
+  verifyOTP
 };

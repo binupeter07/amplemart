@@ -14,6 +14,10 @@ const initialState = {
   message: "",
   verifiedUsers: 0,
   suspendedUsers: 0,
+  isOTPSending: false, 
+otpError: null,
+otpSuccess: false, 
+
 };
 
 // Register User
@@ -291,6 +295,31 @@ export const removeFromWishlist = createAsyncThunk(
   }
 );
 
+export const sendOTP = createAsyncThunk("auth/sendOTP", async (email, thunkAPI) => {
+  try {
+    return await authService.sendOTP(email); 
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+export const verifyOTP = createAsyncThunk("auth/verifyOTP", async ({ email, otp }, thunkAPI) => {
+  try {
+    return await authService.verifyOTP(email, otp);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -514,6 +543,34 @@ const authSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
         toast.error(action.payload);
+      })
+      .addCase(sendOTP.pending, (state) => {
+        state.isOTPSending = true; 
+        state.otpError = null; 
+      })
+      .addCase(sendOTP.fulfilled, (state, action) => {
+        state.isOTPSending = false; 
+        state.otpSuccess = true; 
+        state.otpError = null;
+      })
+      .addCase(sendOTP.rejected, (state, action) => {
+        state.isOTPSending = false; 
+        state.otpError = action.payload;
+        state.otpSuccess = false;
+      })
+      .addCase(verifyOTP.pending, (state) => {
+        // Optional: Set a flag for verifying state - useful for loading states
+        state.isOTPVerifying = true;  
+      })
+      .addCase(verifyOTP.fulfilled, (state, action) => {
+        state.isOTPVerifying = false;
+        state.isOTPVerified = true; // Set a flag indicating successful verification
+        // You might have additional logic here, like proceeding with registration
+      })
+      .addCase(verifyOTP.rejected, (state, action) => {
+        state.isOTPVerifying = false;
+        state.isOTPVerified = false; 
+        state.otpError = action.payload; // Store the error message
       });
   },
 });

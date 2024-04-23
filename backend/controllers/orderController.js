@@ -59,10 +59,17 @@ const getOrders = asyncHandler(async (req, res) => {
 
   if (req.user.role === "admin") {
     orders = await Order.find().sort("-createdAt");
-    return res.status(200).json(orders);
+  } else {
+    orders = await Order.find({ user: req.user._id }).sort("-createdAt");
   }
-  orders = await Order.find({ user: req.user._id }).sort("-createdAt");
-  res.status(200).json(orders);
+
+  // Format orderAmount to two decimal places
+  const formattedOrders = orders.map(order => ({
+    ...order.toObject(),
+    orderAmount: parseFloat(order.orderAmount).toFixed(2)
+  }));
+
+  res.status(200).json(formattedOrders);
 });
 
 // Get single Order

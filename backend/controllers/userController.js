@@ -72,52 +72,53 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 // Login User
+// Login User
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   // Validate Request
   if (!email || !password) {
-    res.status(400);
-    throw new Error("Please add email and password");
+    return res
+      .status(400)
+      .json({ message: "Please add both email and password" });
   }
 
   // Check if user exists
   const user = await User.findOne({ email });
-
   if (!user) {
-    res.status(400).json({ message: "User not found" });
+    return res.status(404).json({ message: "User not found, please sign up" });
   }
+
   if (user.isBlocked) {
-    res.status(400).json({ message: "Blocked" });
+    return res.status(403).json({ message: "User is blocked" });
   }
 
   // User exists, check if password is correct
   const passwordIsCorrect = await bcrypt.compare(password, user.password);
+  if (!passwordIsCorrect) {
+    return res.status(401).json({ message: "Password is incorrect" });
+  }
 
-  //   Generate Token
+  // Generate Token
   const token = generateToken(user._id);
 
-  if (passwordIsCorrect) {
-    // Send Login cookie
-    res.cookie("token", token, {
-      path: "/",
-      httpOnly: true,
-      // expires: new Date(Date.now() + 1000 * 86400), // 1 day
-      maxAge: 24 * 60 * 60 * 1000,
-      sameSite: "none",
-      secure: true,
-    });
-  }
+  // Send login cookie
+  res.cookie("token", token, {
+    path: "/",
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
+    sameSite: "None",
+    secure: true,
+  });
 
-  if (user && passwordIsCorrect) {
-    const { _id, name, email, phone, address } = user;
-    const newUser = await User.findOne({ email }).select("-password");
-
-    res.status(200).json(newUser);
-  } else {
-    res.status(400);
-    throw new Error("Invalid email or password");
-  }
+  res.status(200).json({
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    phone: user.phone,
+    role: user.role,
+    token,
+  });
 });
 
 // Logout User

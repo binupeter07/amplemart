@@ -145,25 +145,29 @@ const cartSlice = createSlice({
     },
     CALCULATE_SUBTOTAL(state, action) {
       const array = [];
-      state.cartItems.map((item) => {
+      state.cartItems.forEach((item) => {
         const { price, cartQuantity } = item;
         const cartItemAmount = price * cartQuantity;
-        return array.push(cartItemAmount);
+        array.push(cartItemAmount);
       });
-      const totalAmount = array.reduce((a, b) => {
-        return a + b;
-      }, 0);
+      // Sum all item amounts to get the total amount
+      const totalAmount = array.reduce((a, b) => a + b, 0);
+      
+      // Set the fixed cart total amount
       state.fixedCartTotalAmount = totalAmount;
-      if (action.payload && action.payload.coupon !== null) {
+      
+      if (action.payload && action.payload.coupon) {
         const discountedTotalAmount = applyDiscount(
           totalAmount,
           action.payload.coupon.discount
         );
-        state.cartTotalAmount = discountedTotalAmount;
+        // Round the discounted total amount to ensure no floating points
+        state.cartTotalAmount = Math.round(discountedTotalAmount);
       } else {
         state.cartTotalAmount = totalAmount;
       }
     },
+       
     CALCULATE_TOTAL_QUANTITY(state, action) {
       const array = [];
       state.cartItems?.map((item) => {

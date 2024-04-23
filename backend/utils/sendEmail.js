@@ -1,64 +1,50 @@
 const nodemailer = require("nodemailer");
-const dotenv = require("dotenv").config();
+const MailGen = require("mailgen");
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
+const sendEmail = async (subject, send_to, template, reply_to, cc) => {
+  // Create Email Transporter
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    host: process.env.EMAIL_HOST,
+    port: 587,
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+    // tls: {
+    //   rejectUnauthorized: false,
+    // },
+  });
 
-const sendMailContactUs = async (senderEmail, senderName, message) => {
-  try {
-    const htmlContent = `
-    <html>
-      <body>
-        <h4>Message from ${senderName} </h4>
-          <p>${message.replace(/\n/g, '<br>')}</p>
-          <p>From ${senderEmail},</p>
-          <p>Ample Mart</p>
-      </body>
-    </html>`;
+  // Create Template With MailGen
+  const mailGenerator = new MailGen({
+    theme: "salted",
+    product: {
+      name: "Amplemart App",
+      link: "https://amplemart.vercel.app",
+    },
+  });
+  const emailTemplate = mailGenerator.generate(template);
+  require("fs").writeFileSync("preview.html", emailTemplate, "utf8");
 
-    const mailOptions = {
-      from: `${senderName} <${senderEmail}>`,
-      to: process.env.EMAIL_USER, // Your email address
-      subject: 'Amplemart enquiry',
-      text: 'From website', // Plain text body
-      html: htmlContent // HTML body
-    };
+  // Options f0r sending email
+  const options = {
+    from: process.env.EMAIL_USER,
+    to: send_to,
+    replyTo: reply_to,
+    subject,
+    html: emailTemplate,
+    cc,
+  };
 
-    const sent = await transporter.sendMail(mailOptions);
-    return sent;
-  } catch (error) {
-    throw error;
-  }
-};
-const sendEmail = async (subject, htmlContent, send_to) => {
-  try {
-    // Create Email Transporter
-    // let transporter = nodemailer.createTransport({
-    //   service: "Gmail",
-    //   auth: {
-    //     user: "amplemart07@gmail.com",
-    //     pass: "qxph ckfc uvua fxcu",
-    //   },
-    // });
-
-    // Options for sending email
-    const options = {
-      from: "amplemart07@gmail.com",
-      to: send_to,
-      subject,
-      html: htmlContent,
-    };
-
-    const info = await transporter.sendMail(options);
-    console.log("Email sent:", info.response);
-  } catch (error) {
-    console.error("Error sending email:", error);
-  }
+  // Send Email
+  transporter.sendMail(options, function (err, info) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(info);
+    }
+  });
 };
 
-module.exports = { sendEmail, sendMailContactUs };
+module.exports = sendEmail;

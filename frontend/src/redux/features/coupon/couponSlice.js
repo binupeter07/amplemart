@@ -54,8 +54,23 @@ export const getCoupon = createAsyncThunk(
   "coupons/getCoupon",
   async (couponName, thunkAPI) => {
     try {
-      return await couponService.getCoupon(couponName);
+      // Retrieve the coupon details from the database using the coupon name
+      const coupon = await couponService.getCoupon(couponName.toUpperCase());
+
+      // Check if the coupon is expired by comparing the current date with the coupon's expiration date
+      const currentDate = new Date();
+      const expirationDate = new Date(coupon.expiresAt);
+
+      // If the current date is after the expiration date, the coupon has expired
+      if (currentDate > expirationDate) {
+        // Reject the thunk with a value indicating the coupon is expired
+        return thunkAPI.rejectWithValue('Coupon is expired');
+      }
+
+      // If the coupon is not expired, return the coupon details
+      return coupon;
     } catch (error) {
+      // Extract error message from the response or use the default error message
       const message =
         (error.response &&
           error.response.data &&
@@ -63,12 +78,15 @@ export const getCoupon = createAsyncThunk(
         error.message ||
         error.toString();
       console.log(message);
+      // Reject the thunk with the error message
       return thunkAPI.rejectWithValue(message);
     }
   }
 );
 
-// Delete a Product
+
+
+// Delete a Coupon
 export const deleteCoupon = createAsyncThunk(
   "coupons/delete",
   async (id, thunkAPI) => {

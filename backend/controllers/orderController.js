@@ -113,46 +113,54 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
 });
 
 // Pay with stripe
+// Pay with stripe
 const payWithStripe = asyncHandler(async (req, res) => {
   const { items, shipping, description, coupon } = req.body;
   const products = await Product.find();
 
-  let orderAmount;
-  orderAmount = calculateTotalPrice(products, items);
+  let orderAmount = calculateTotalPrice(products, items);
+
   if (coupon !== null && coupon?.name !== "nil") {
-    let totalAfterDiscount =
-      orderAmount - (orderAmount * coupon.discount) / 100;
-    orderAmount = totalAfterDiscount;
+    let totalAfterDiscount = orderAmount - (orderAmount * coupon.discount) / 100;
+    orderAmount = Math.round(totalAfterDiscount); // Ensure the total amount is rounded to an integer
+  } else {
+    orderAmount = Math.round(orderAmount); // Ensure rounding even without coupon
   }
 
+  // Convert the order amount from dollars to cents for Stripe
+  const amountInCents = orderAmount * 100; // Assuming orderAmount is in dollars. Adjust if in other currency
+
   // Create a PaymentIntent with the order amount and currency
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: orderAmount,
-    currency: "usd",
-    automatic_payment_methods: {
-      enabled: true,
-    },
-    description,
-    shipping: {
-      address: {
-        line1: shipping.line1,
-        line2: shipping.line2,
-        city: shipping.city,
-        country: shipping.country,
-        postal_code: shipping.postal_code,
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amountInCents,
+      currency: "usd",
+      automatic_payment_methods: {
+        enabled: true,
       },
-      name: shipping.name,
-      phone: shipping.phone,
-    },
-    // receipt_email: customerEmail
-  });
+      description,
+      shipping: {
+        address: {
+          line1: shipping.line1,
+          line2: shipping.line2,
+          city: shipping.city,
+          country: shipping.country,
+          postal_code: shipping.postal_code,
+        },
+        name: shipping.name,
+        phone: shipping.phone,
+      },
+    });
 
-  // console.log(paymentIntent);
-
-  res.send({
-    clientSecret: paymentIntent.client_secret,
-  });
+    res.send({
+      clientSecret: paymentIntent.client_secret,
+    });
+  } catch (error) {
+    console.error('Error creating Stripe payment intent:', error);
+    res.status(500).send({ error: error.message });
+  }
 });
+
 
 
 
@@ -215,10 +223,8 @@ const payWithWallet = asyncHandler(async (req, res) => {
   // Send Order Email to the user
   const subject = "Amplemart Order Placed";
   const send_to = user.email;
-  // const send_to = "zinotrust@gmail.com";
   const template = orderSuccessEmail(user.name, cartItems);
   const reply_to = "@gmail.com";
-  // const cc = "donaldzee.ng@gmail.com";
 
   await sendEmail(subject, send_to, template, reply_to);
 

@@ -6,25 +6,27 @@ const createCoupon = asyncHandler(async (req, res) => {
   const { name, expiresAt, discount } = req.body;
 
   if (!name || !expiresAt || !discount) {
-    res.status(400);
-    throw new Error("Please fill in all fields");
+    return res.status(400).json({ message: "Please fill in all fields" });
   }
+
+  // Check if the coupon already exists
+  const existingCoupon = await Coupon.findOne({ name });
+  if (existingCoupon) {
+    return res.status(400).json({ message: "Coupon name already exists" });
+  }
+
   const coupon = await Coupon.create({
     name,
     expiresAt,
     discount,
   });
-  if (coupon) {
-    res.status(201).json(coupon);
-  } else {
-    res.status(400);
-    throw new Error("Something went wrong!!! Please Try again.");
-  }
+
+  res.status(201).json(coupon);
 });
 
 // Get Coupons
 const getCoupons = asyncHandler(async (req, res) => {
-  const coupons = await Coupon.find().sort("-createdAt");
+  const coupons = await Coupon.find({ expiresAt: { $gt: Date.now() } }).sort("-createdAt");
   res.status(200).json(coupons);
 });
 
@@ -36,8 +38,7 @@ const getCoupon = asyncHandler(async (req, res) => {
   });
 
   if (!coupon) {
-    res.status(404);
-    throw new Error("Coupon not found or has expired");
+    return res.status(404).json({ message: "Coupon not found or has expired" });
   }
 
   res.status(200).json(coupon);
@@ -47,8 +48,7 @@ const getCoupon = asyncHandler(async (req, res) => {
 const deleteCoupon = asyncHandler(async (req, res) => {
   const coupon = await Coupon.findByIdAndDelete(req.params.id);
   if (!coupon) {
-    res.status(404);
-    throw new Error("Coupon not found");
+    return res.status(404).json({ message: "Coupon not found" });
   }
   res.status(200).json({ message: "Coupon deleted." });
 });

@@ -48,5 +48,5 @@ router.put("/wishlist/:productId", protect, removeFromWishlist);
 router.get("/getCart", protect, getCart);
 router.patch("/saveCart", protect, saveCart);
 router.patch("/clearCart", protect, clearCart);
-router.post("/contactus", sendContactMail);
+router.post('/contactus', sendContactMail)
 module.exports = router;

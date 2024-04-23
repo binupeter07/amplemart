@@ -3,7 +3,7 @@ import "./Contact.scss";
 import { sendContactMail } from "../../redux/features/auth/authService";
 import { toast } from "react-toastify";
 
-const ContactPage = () => { 
+const ContactPage = () => {
     const [formData, setFormData] = useState({
         name: "",
         email: "",

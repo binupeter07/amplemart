@@ -3,7 +3,7 @@ import "./Contact.scss";
 import { sendContactMail } from "../../redux/features/auth/authService";
 import { toast } from "react-toastify";
 
-const ContactPage = () => {
+const ContactPage = () => { 
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -54,22 +54,22 @@ const ContactPage = () => {
     const onFormSubmit = async (e) => {
         e.preventDefault();
         const isValid = validateForm();
-        if (isValid) {
-            // Simulating a sending error
+        if (!isValid) {
             simulateSendingError(); // Remove this line once you integrate with real sending functionality
             return
         }
         try {
-            const response = await sendContactMail(formData);
             setFormData({
                 name: "",
                 email: "",
                 MessageData: ""
             })
+            const response = await sendContactMail(formData);
             setSendingError("")
             setErrors({})
             toast.success(response)
         } catch (error) {
+            simulateSendingError();
             toast.error("failed to send message")
         }
     };

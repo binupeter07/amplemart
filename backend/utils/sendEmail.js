@@ -24,7 +24,7 @@ const sendMailContactUs = async (senderEmail, senderName, message) => {
     const mailOptions = {
       from: `${senderName} <${senderEmail}>`,
       to: process.env.EMAIL_USER, // Your email address
-      subject: 'Amplemart Enquiry',
+      subject: 'Amplemart enquiry',
       text: 'From website', // Plain text body
       html: htmlContent // HTML body
     };
@@ -37,7 +37,16 @@ const sendMailContactUs = async (senderEmail, senderName, message) => {
 };
 const sendEmail = async (subject, htmlContent, send_to) => {
   try {
+    // Create Email Transporter
+    // let transporter = nodemailer.createTransport({
+    //   service: "Gmail",
+    //   auth: {
+    //     user: "amplemart07@gmail.com",
+    //     pass: "qxph ckfc uvua fxcu",
+    //   },
+    // });
 
+    // Options for sending email
     const options = {
       from: "amplemart07@gmail.com",
       to: send_to,

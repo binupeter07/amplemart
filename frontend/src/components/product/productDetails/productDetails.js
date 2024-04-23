@@ -1,4 +1,4 @@
-import styles from "./productDetails.module.scss";
+import styles from "./ProductDetails.module.scss";
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";

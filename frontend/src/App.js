@@ -18,9 +18,9 @@ import { useEffect } from "react";
 import Profile from "./pages/Profile/Profile.js";
 import AdminOnlyRoute from "./components/adminOnlyRoute/AdminOnlyRoute.js";
 import Admin from "./pages/Admin/Admin.js";
-import NotFound from "./pages/404/notFound.js";
+import NotFound from "./pages/404/NotFound.js";
 import Product from "./pages/shop/Shop.js";
-import ProductDetails from "./components/product/productDetails/productDetails.js";
+import ProductDetails from "./components/product/productDetails/ProductDetails.js";
 import Cart from "./pages/cart/Cart.js";
 import CheckoutDetails from "./pages/checkout/CheckoutDetails.js";
 import Checkout from "./pages/checkout/Checkout.js";
@@ -59,46 +59,46 @@ const App = () => {
       <ToastContainer />
       <Header />
       <AnimatePresence>
-      <div style={{minHeight:"calc(100vh - 8.8rem)"}}>
-        <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+        <div style={{ minHeight: "calc(100vh - 8.8rem)" }}>
+          <Routes location={location} key={location.pathname}>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
-          <Route path="/profile" element={<Profile />} />
+            <Route path="/profile" element={<Profile />} />
 
-          <Route
-            path="/admin/*"
-            element={
-              <AdminOnlyRoute>
-                <Admin />
-              </AdminOnlyRoute>
-            }
-          />
+            <Route
+              path="/admin/*"
+              element={
+                <AdminOnlyRoute>
+                  <Admin />
+                </AdminOnlyRoute>
+              }
+            />
 
-          <Route path="/shop" element={<Product />} />
-          <Route path="/product-details/:id" element={<ProductDetails />} />
-          <Route path="/cart" element={<Cart />} />
+            <Route path="/shop" element={<Product />} />
+            <Route path="/product-details/:id" element={<ProductDetails />} />
+            <Route path="/cart" element={<Cart />} />
 
-          <Route path="/checkout-details" element={<CheckoutDetails />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/checkout-paypal" element={<CheckoutPaypal />} />
-          <Route path="/checkout-success" element={<CheckoutSuccess />} />
-          <Route path="/resetpassword" element={<ResetPassword />} />
-          <Route path="/change-password" element={<ChangePassword />} />
-          <Route path="/order-history" element={<OrderHistory />} />
-          <Route path="/order-details/:id" element={<OrderDetails />} />
+            <Route path="/checkout-details" element={<CheckoutDetails />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/checkout-paypal" element={<CheckoutPaypal />} />
+            <Route path="/checkout-success" element={<CheckoutSuccess />} />
+            <Route path="/resetpassword" element={<ResetPassword />} />
+            <Route path="/change-password" element={<ChangePassword />} />
+            <Route path="/order-history" element={<OrderHistory />} />
+            <Route path="/order-details/:id" element={<OrderDetails />} />
 
-          <Route path="/review-product/:id" element={<ReviewProducts />} />
-          <Route path="/contact" element={<ContactPage />} />
+            <Route path="/review-product/:id" element={<ReviewProducts />} />
+            <Route path="/contact" element={<ContactPage />} />
 
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        </ div >
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
       </AnimatePresence>
       <Footer />
     </>
   );
-}
+};
 
 export default App;

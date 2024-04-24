@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { getOrder } from "../../../redux/features/product/orderSlice";
 import { Spinner } from "../../Loader/Loader";
 import ChangeOrderStatus from "../changeOrderStatus/ChangeOrderStatus";
-import Order from "../../../pages/orderDetails/Order";
+import Order from "../../../pages/Admin/orderDetails/Order";
 
 const OrderDetails = () => {
   const { id } = useParams();

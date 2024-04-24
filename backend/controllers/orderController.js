@@ -128,7 +128,7 @@ const payWithStripe = asyncHandler(async (req, res) => {
   let orderAmount = calculateTotalPrice(products, items);
 
   if (coupon !== null && coupon?.name !== "nil") {
-    let totalAfterDiscount = orderAmount - (orderAmount * coupon.discount) / 100;
+    let totalAfterDiscount = orderAmount - ((orderAmount * coupon.discount) / 100) ;
     orderAmount = Math.round(totalAfterDiscount); // Ensure the total amount is rounded to an integer
   } else {
     orderAmount = Math.round(orderAmount); // Ensure rounding even without coupon

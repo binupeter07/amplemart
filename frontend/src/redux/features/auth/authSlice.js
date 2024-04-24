@@ -295,7 +295,7 @@ export const removeFromWishlist = createAsyncThunk(
   }
 );
 
-export const sendOTP = createAsyncThunk("auth/sendOTP", async (email, thunkAPI) => {
+export const sendOTP = createAsyncThunk("auth/send-otp", async (email, thunkAPI) => {
   try {
     return await authService.sendOTP(email); 
   } catch (error) {

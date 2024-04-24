@@ -74,11 +74,15 @@ const sendOTPMail = async (send_to, reply_to) => {
   // Send email
   try {
     const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent successfully: ", info);
+    console.log("Email sent successfully: ",  info);
+    return otp
   } catch (error) {
     console.error("Failed to send email:", error);
-    throw error; 
+    throw error;
   }
 };
 
-module.exports = sendOTPMail;
+module.exports = { 
+  sendOTPMail 
+};
+

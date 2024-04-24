@@ -5,6 +5,8 @@ const bcrypt = require("bcryptjs");
 const { sendEmail } = require("../utils/sendEmail");
 const dotenv = require("dotenv").config();
 const { sendOTPMail } = require("../utils/sendOTPMail");
+const otpModel = require("../models/otpModel");
+const { response } = require("express");
 
 // Generate Token
 const generateToken = (id) => {
@@ -352,8 +354,6 @@ const resetPassword = asyncHandler(async (req, res) => {
   }
 });
 
-let otpStorage = {};
-
 // Send OTP to user's email
 const sendOTP = asyncHandler(async (req, res) => {
   const { email } = req.body;
@@ -364,23 +364,34 @@ const sendOTP = asyncHandler(async (req, res) => {
   }
 
   // Optional: Check if the email is already registered
-  const userExists = await User.findOne({ email });
-  if (userExists) {
-    return res.status(400).json({ message: "Email already in use." });
+
+  try {
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(400).json({ message: "Email already in use." });
+    }
+    const otp = await sendOTPMail(email, "no-reply@yourapp.com");
+    console.log(otp, email);
+    const newOtpData = await otpModel({
+      email,
+      otp,
+    }).save();
+    console.log(newOtpData);
+    res.status(200).json({ message: "OTP sent successfully to " + email });
+  } catch (error) {
+    res.status(500).send({ message: "Failed to send otp" });
   }
-
-  const otp = await sendOTPMail(email, "no-reply@yourapp.com");
-  otpStorage[email] = otp; 
-
-  res.status(200).json({ message: "OTP sent successfully to " + email });
 });
 
 // Verify OTP provided by the user
 const verifyOTP = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
 
-  if (otp === otpStorage[email]) {
-    delete otpStorage[email]; 
+  const existOTPData = await otpModel.findOne({
+    email
+  })
+
+  if (otp === existOTPData.otp) {
     res.status(200).json({ message: "OTP verified successfully." });
   } else {
     res.status(400).json({ message: "Invalid OTP. Please try again." });
@@ -485,5 +496,5 @@ module.exports = {
   getUsers,
   changeStatus,
   sendOTP,
-  verifyOTP
+  verifyOTP,
 };

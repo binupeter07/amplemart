@@ -27,7 +27,7 @@ const activeLink = ({ isActive }) => (isActive ? `${styles.active}` : "");
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
-  const [scrollPage, setScrollPage] = useState(true);
+  const [scrollPage, setScrollPage] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -41,7 +41,7 @@ const Header = () => {
     if (window.scrollY > 50) {
       setScrollPage(true);
     } else {
-      setScrollPage(false);
+      setScrollPage(true);
     }
   };
   window.addEventListener("scroll", fixNavbar);

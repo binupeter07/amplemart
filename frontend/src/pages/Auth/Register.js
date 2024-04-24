@@ -6,29 +6,30 @@ import { Link, useNavigate } from "react-router-dom";
 import Loader from "../../components/Loader/Loader";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { validateEmail } from "../../redux/features/auth/authService"; // Assuming you have this function
-import { RESET_AUTH, register } from "../../redux/features/auth/authSlice";
-import { sendOTP, verifyOTP } from "../../redux/features/auth/authSlice";
+import { validateEmail } from "../../redux/features/auth/authService"; 
+import { RESET_AUTH, register, sendOTP, verifyOTP } from "../../redux/features/auth/authSlice";
 
 const initialState = {
   name: "",
   email: "",
   password: "",
   cPassword: "",
-  otp: "", 
+  otp: "",
 };
 
 const Register = () => {
   const [formData, setFormData] = useState(initialState);
-  const [isOtpSent, setIsOtpSent] = useState(false); 
   const { name, email, password, cPassword, otp } = formData;
 
-  const { isLoading, isLoggedIn, isSuccess, message } = useSelector(
-    (state) => state.auth
-  );
-  const { isOTPSending, isOTPVerifying, otpError, isOTPVerified, otpSuccess } = useSelector(
-    (state) => state.auth
-  );
+  const {
+    isLoading,
+    isLoggedIn,
+    isSuccess,
+    isOTPSending,
+    isOTPVerifying,
+    isOTPVerified,
+  } = useSelector((state) => state.auth);
+  const [isOtpSent, setIsOtpSent] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -38,82 +39,61 @@ const Register = () => {
   };
 
   const sendOTPToUser = async () => {
+    if (!email || !validateEmail(email)) {
+      toast.error("Please enter a valid email");
+      return;
+    }
+
     try {
-      // Basic input validation
-      if (!email) {
-        return toast.error("Please enter your email");
-      }
-
-      await dispatch(sendOTP(email)); 
-
-      if (otpSuccess) {
-        setIsOtpSent(true);
-        toast.success("OTP sent successfully"); 
-      } else if (otpError) {
-        toast.error(`Error sending OTP: ${otpError}`);
-      }
+      await dispatch(sendOTP(email));
+      setIsOtpSent(true);
+      toast.success("OTP sent successfully");
     } catch (error) {
-      console.error("Error sending OTP:", error); 
-      toast.error("Error sending OTP. Please try again.");
+      toast.error(`Error sending OTP: ${error.message || "Unknown error"}`);
     }
   };
 
   const verifyOTPFromUser = async () => {
+    if (!email || !otp) {
+      toast.error("Please enter your email and OTP");
+      return;
+    }
+
     try {
-      // Basic input validation 
-      if (!email || !otp) {
-        return toast.error("Please enter your email and OTP");
-      }
-
-      await dispatch(verifyOTP({ email, otp })); 
-
-      if (otpError) {
-        toast.error(`Invalid OTP: ${otpError}`);
-      } else if (isOTPVerified) {
-        toast.success("OTP verified!");
-        registerUser(); 
-      }
+      await dispatch(verifyOTP({ email, otp }));
+      toast.success("OTP verified!");
+      registerUser();
     } catch (error) {
-      console.error("Error verifying OTP:", error); 
-      toast.error("Error verifying OTP. Please try again.");
+      toast.error(`Invalid OTP: ${error.message || "Unknown error"}`);
     }
   };
 
-  const registerUser = async (e) => {
-    e.preventDefault();
-
-    // Validation
+  const registerUser = async () => {
     if (!name || !email || !password || !cPassword) {
-      return toast.error("All fields are required");
-    }
-    if (password.length < 6) {
-      return toast.error("Password must be at least 6 characters long");
-    }
-    if (!validateEmail(email)) {
-      return toast.error("Please enter a valid email");
+      toast.error("All fields are required");
+      return;
     }
     if (password !== cPassword) {
-      return toast.error("Passwords do not match");
+      toast.error("Passwords do not match");
+      return;
+    }
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters long");
+      return;
     }
 
-    const userData = {
-      name,
-      email,
-      password,
-    };
-
-    dispatch(register(userData)); 
+    const userData = { name, email, password };
+    dispatch(register(userData));
   };
 
   useEffect(() => {
     if (isSuccess && isLoggedIn) {
       navigate("/");
     }
-
     return () => {
       dispatch(RESET_AUTH());
     };
-  }, [isLoggedIn, isSuccess, dispatch, navigate]);
+  }, [isLoggedIn, isSuccess, navigate, dispatch]);
 
   return (
     <>
@@ -122,8 +102,7 @@ const Register = () => {
         <Card>
           <div className={styles.form}>
             <h2>Register</h2>
-
-            <form onSubmit={registerUser}> 
+            <form onSubmit={registerUser}>
               <input
                 type="text"
                 placeholder="Name"
@@ -168,7 +147,7 @@ const Register = () => {
                     onChange={handleInputChange}
                   />
                   <button
-                    type="button" 
+                    type="button"
                     className="--btn --btn-primary --btn-block"
                     onClick={verifyOTPFromUser}
                     disabled={isOTPVerifying}
@@ -178,7 +157,7 @@ const Register = () => {
                 </>
               ) : (
                 <button
-                  type="button" 
+                  type="button"
                   className="--btn --btn-primary --btn-block"
                   onClick={sendOTPToUser}
                   disabled={isOTPSending}
@@ -187,13 +166,17 @@ const Register = () => {
                 </button>
               )}
 
-              <button type="submit" className="--btn --btn-primary --btn-block" disabled={isOTPVerifying}>
+              <button
+                type="submit"
+                className="--btn --btn-primary --btn-block"
+                disabled={isOTPVerifying || !isOTPVerified}
+              >
                 Register
               </button>
             </form>
 
             <span className={styles.register}>
-              <p>Already an account?</p>
+              <p>Already have an account?</p>
               <Link to="/login">Login</Link>
             </span>
           </div>
@@ -207,3 +190,5 @@ const Register = () => {
 };
 
 export default Register;
+
+

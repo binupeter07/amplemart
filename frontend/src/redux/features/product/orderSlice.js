@@ -99,7 +99,7 @@ const orderSlice = createSlice({
         return array.push(orderAmount);
       });
       const totalAmount = array.reduce((a, b) => {
-        return a + b;
+        return parseFloat(a) + parseFloat(b);
       }, 0);
       state.totalOrderAmount = totalAmount;
     },

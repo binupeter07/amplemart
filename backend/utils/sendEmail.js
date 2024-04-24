@@ -24,7 +24,7 @@ const sendMailContactUs = async (senderEmail, senderName, message) => {
     const mailOptions = {
       from: `${senderName} <${senderEmail}>`,
       to: process.env.EMAIL_USER, // Your email address
-      subject: 'Student Mail',
+      subject: 'Amplemart Enquiry',
       text: 'From website', // Plain text body
       html: htmlContent // HTML body
     };

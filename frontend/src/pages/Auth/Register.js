@@ -19,81 +19,90 @@ const initialState = {
 
 const Register = () => {
   const [formData, setFormData] = useState(initialState);
-  const { name, email, password, cPassword, otp } = formData;
+    const { name, email, password, cPassword, otp } = formData;
 
-  const {
-    isLoading,
-    isLoggedIn,
-    isSuccess,
-    isOTPSending,
-    isOTPVerifying,
-    isOTPVerified,
-  } = useSelector((state) => state.auth);
-  const [isOtpSent, setIsOtpSent] = useState(false);
+    const {
+      isLoading,
+      isLoggedIn,
+      isSuccess,
+      isOTPSending,
+      isOTPVerifying,
+      isOTPVerified,
+    } = useSelector((state) => state.auth);
+    const [isOtpSent, setIsOtpSent] = useState(false);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const sendOTPToUser = async () => {
-    if (!email || !validateEmail(email)) {
-      toast.error("Please enter a valid email");
-      return;
-    }
-
-    try {
-      await dispatch(sendOTP(email));
-      setIsOtpSent(true);
-      toast.success("OTP sent successfully");
-    } catch (error) {
-      toast.error(`Error sending OTP: ${error.message || "Unknown error"}`);
-    }
-  };
-
-  const verifyOTPFromUser = async () => {
-    if (!email || !otp) {
-      toast.error("Please enter your email and OTP");
-      return;
-    }
-
-    try {
-      await dispatch(verifyOTP({ email, otp }));
-      toast.success("OTP verified!");
-      registerUser();
-    } catch (error) {
-      toast.error(`Invalid OTP: ${error.message || "Unknown error"}`);
-    }
-  };
-
-  const registerUser = async () => {
-    if (!name || !email || !password || !cPassword) {
-      toast.error("All fields are required");
-      return;
-    }
-    if (password !== cPassword) {
-      toast.error("Passwords do not match");
-      return;
-    }
-    if (password.length < 6) {
-      toast.error("Password must be at least 6 characters long");
-      return;
-    }
-
-    const userData = { name, email, password };
-    dispatch(register(userData));
-  };
-
-  useEffect(() => {
-    if (isSuccess && isLoggedIn) {
-      navigate("/");
-    }
-    return () => {
-      dispatch(RESET_AUTH());
+    const handleInputChange = (e) => {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
     };
-  }, [isLoggedIn, isSuccess, navigate, dispatch]);
+
+    const sendOTPToUser = async () => {
+      if (!email || !validateEmail(email)) {
+        toast.error("Please enter a valid email");
+        return;
+      }
+
+      try {
+        await dispatch(sendOTP(email));
+        setIsOtpSent(true);
+        toast.success("OTP sent successfully");
+      } catch (error) {
+        toast.error(`Error sending OTP: ${error.message || "Unknown error"}`);
+      }
+    };
+
+    const verifyOTPFromUser = async () => {
+      if (!email || !otp) {
+        toast.error("Please enter your email and OTP");
+        return;
+      }
+
+      try {
+        dispatch(verifyOTP({ email, otp })).then((res) => {
+          if (res.error) {
+            toast.error(res.payload.message)
+          } else {
+            toast.success("OTP verified!");
+            registerUser();
+          }
+          console.log(res)
+        })
+      } catch (error) {
+        toast.error(`Invalid OTP: ${error.message || "Unknown error"}`);
+      }
+    };
+
+    const registerUser = async () => {
+      if (!name || !email || !password || !cPassword) {
+        toast.error("All fields are required");
+        return;
+      }
+      if (password !== cPassword) {
+        toast.error("Passwords do not match");
+        return;
+      }
+      if (password.length < 6) {
+        toast.error("Password must be at least 6 characters long");
+        return;
+      }
+      if ( !isOTPVerified) {
+        toast.error("OTP NOT VERIFIED");
+        return null
+      }
+
+      const userData = { name, email, password };
+      dispatch(register(userData));
+    };
+
+    useEffect(() => {
+      if (isSuccess && isLoggedIn) {
+        navigate("/");
+      }
+      return () => {
+        dispatch(RESET_AUTH());
+      };
+    }, [isLoggedIn, isSuccess, navigate, dispatch]);
 
   return (
     <>
@@ -166,13 +175,13 @@ const Register = () => {
                 </button>
               )}
 
-              <button
+              {isOTPVerified && <button
                 type="submit"
                 className="--btn --btn-primary --btn-block"
                 disabled={isOTPVerifying || !isOTPVerified}
               >
                 Register
-              </button>
+              </button>}
             </form>
 
             <span className={styles.register}>

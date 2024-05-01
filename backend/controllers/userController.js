@@ -370,6 +370,7 @@ const sendOTP = asyncHandler(async (req, res) => {
     if (userExists) {
       return res.status(400).json({ message: "Email already in use." });
     }
+    await otpModel.deleteMany({email})
     const otp = await sendOTPMail(email, "no-reply@yourapp.com");
     console.log(otp, email);
     const newOtpData = await otpModel({
@@ -386,15 +387,13 @@ const sendOTP = asyncHandler(async (req, res) => {
 // Verify OTP provided by the user
 const verifyOTP = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
-
   const existOTPData = await otpModel.findOne({
     email
   })
-
   if (otp === existOTPData.otp) {
-    res.status(200).json({ message: "OTP verified successfully." });
+    res.status(200).json({ message: "OTP verified successfully." ,error:false });
   } else {
-    res.status(400).json({ message: "Invalid OTP. Please try again." });
+    res.status(400).json({ message: "Invalid OTP. Please try again." , error:true });
   }
 });
 

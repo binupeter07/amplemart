@@ -311,11 +311,11 @@ export const verifyOTP = createAsyncThunk("auth/verifyOTP", async ({ email, otp 
   try {
     return await authService.verifyOTP(email, otp);
   } catch (error) {
-    const message =
-      (error.response && error.response.data && error.response.data.message) ||
-      error.message ||
+    const errorData =
+      (error.response && error.response.data && error.response.data) ||
+      error ||
       error.toString();
-    return thunkAPI.rejectWithValue(message);
+    return thunkAPI.rejectWithValue(errorData);
   }
 });
 
